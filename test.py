@@ -1,24 +1,28 @@
-import logging
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ParseMode
+from aiogram import Bot, types
+from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 
-# Установка логирования
-logging.basicConfig(level=logging.INFO)
+from config import TOKEN
 
-# Токен вашего бота
-API_TOKEN = '6581576935:AAER5ITDyFcGgOQ-pnCZ7zabkTtj3yMbUe4'
 
-# Инициализация бота и диспетчера
-bot = Bot(token=API_TOKEN)
+bot = Bot(token="6581576935:AAER5ITDyFcGgOQ-pnCZ7zabkTtj3yMbUe4")
 dp = Dispatcher(bot)
 
-# Обработчик команды /start
-@dp.message_handler(commands=['start'])
-async def start_command(message: types.Message):
-    # Отправка приветственного сообщения
-    await message.reply("Привет! Я бот-приветствие.")
 
-# Запуск бота
+@dp.message_handler(commands=['start'])
+async def process_start_command(message: types.Message):
+    await message.reply("Привет,напиши мне что нибудь!")
+
+
+@dp.message_handler(commands=['help'])
+async def process_help_command(message: types.Message):
+    await message.reply("Напиши мне сообщение и  отправлю тебе в ответ!")
+                 
+
+@dp.message_handler()
+async def echo_message(msg: types.Message):
+    await bot.send_message(msg.from_user.id, msg.text)
+
+
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp)
