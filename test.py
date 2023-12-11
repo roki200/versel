@@ -1,23 +1,24 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import os
+import logging
+from aiogram import Bot, Dispatcher, types
+from aiogram.types import ParseMode
+from aiogram.utils import executor
 
-TOKEN = os.environ.get("6581576935:AAER5ITDyFcGgOQ-pnCZ7zabkTtj3yMbUe4")
+# Установка логирования
+logging.basicConfig(level=logging.INFO)
 
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+# Токен вашего бота
+API_TOKEN = '6581576935:AAER5ITDyFcGgOQ-pnCZ7zabkTtj3yMbUe4'
 
-def register_handlers(dispatcher):
-    start_handler = CommandHandler('start', start)
-    dispatcher.add_handler(start_handler)
+# Инициализация бота и диспетчера
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher(bot)
 
-def main():
-    updater = Updater(token=TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
+# Обработчик команды /start
+@dp.message_handler(commands=['start'])
+async def start_command(message: types.Message):
+    # Отправка приветственного сообщения
+    await message.reply("Привет! Я бот-приветствие.")
 
-    register_handlers(dispatcher)
-
-    updater.start_polling()
-    updater.idle()
-
+# Запуск бота
 if __name__ == '__main__':
-    main()
+    executor.start_polling(dp, skip_updates=True)
